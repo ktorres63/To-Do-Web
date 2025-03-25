@@ -3,58 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- displays site properly based on user's device -->
-
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./images/favicon-32x32.png"
-    />
-
-    <title>Frontend Mentor | Todo app</title>
+    <title>Todo Web</title>
   </head>
   <body>
-    <div class="background"></div>
-    <div class="container">
-      <header>
-        <h1>TODO</h1>
-        <button id="toggleTheme">
-          <img id="darkModeIcon" src="./images/icon-moon.svg" alt="toogle Theme">
-        </button>
-      </header>
-      <main>
-        <form class="todo-input">
-          <span class="round"></span>
-          <input type="text" id="newTodo" placeholder="Create a new todo..." />
-        </form>
-        <section class="list-container">
-          <ul id="todoList">
-          </ul>
-          <!-- Add dynamic number -->
-          <div class="footer-list">
-            <p class="items-left"></p>
-            <section class="buttons-footer">
-              <a href="#" class="btn-All">All</a>
-              <a href="#" class="btn-active">Active</a> 
-              <a href="#" class="btn-completed">Completed</a>
-            </section>
-            <a href="#" id="clearCompleted">Clear Completed</a>
-          </div>
-        </section>
-        <section class="buttons">
-          <a href="#" class="btn-All">All</a>
-          <a href="#" class="btn-active">Active</a> 
-          <a href="#" class="btn-completed">Completed</a>
-        </section>
-      </main>
-      <p class="message-drag">Drag and drop to reorder list</p>
-    </div>
-    <div class="attribution" style="display: none">
-      Challenge by
-      <a href="https://www.frontendmentor.io?ref=challenge" target="_blank"
-        >Frontend Mentor</a
-      >. Coded by <a href="#">ktorres63</a>.
-    </div>
+    <header>
+      <button id="menu-btn">
+        <img
+          id="menuIcon"
+          src="./images/icon-menu.svg"
+          alt="menu icon"
+        />
+      </button>
+      <h1>TODO</h1>
+      <button id="toggleTheme">
+        <img
+          id="darkModeIcon"
+          src="./images/icon-moon.svg"
+          alt="toogle Theme"
+        />
+      </button>
+    </header>
+    <aside>
+      <section class="buttons">
+        <a href="#" class="btn-All">All</a>
+        <a href="#" class="btn-active">Active</a>
+        <a href="#" class="btn-completed">Completed</a>
+      </section>
+    </aside>
+    <main>
+      <form class="todo-input">
+        <span class="round"></span>
+        <input type="text" id="newTodo" placeholder="Create a new todo..." />
+      </form>
+      <section class="list-container">
+        <ul id="todoList"></ul>
+        <!-- Add dynamic number -->
+        <div class="footer-list">
+          <p class="items-left"></p>
+          <section class="buttons-footer">
+            <a href="#" class="btn-All">All</a>
+            <a href="#" class="btn-active">Active</a>
+            <a href="#" class="btn-completed">Completed</a>
+          </section>
+          <a href="#" id="clearCompleted">Clear Completed</a>
+        </div>
+      </section>
+      
+    </main>
   </body>
 </html>

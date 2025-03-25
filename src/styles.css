@@ -1,9 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap");
 
 :root {
-
   --border-radius: 0.4rem;
-  --bg-image: url("./images/bg-mobile-light.jpg");
+  --bg-image: url("./images/bg-desktop-light.jpg");
 
   /* Primary */
   --bright-blue: hsl(220, 98%, 61%);
@@ -17,24 +16,14 @@
   --light-grayish-blue: hsl(233, 11%, 84%);
   --text-primary: hsl(236, 9%, 61%);
   --very-dark-grayish-blue: hsl(235, 19%, 35%);
-
-  /* Dark Theme
-  --very-dark-blue: hsl(235, 21%, 11%);
-  --very-dark-desaturated-blue: hsl(235, 24%, 19%);
-  --light-grayish-blue-dark: hsl(234, 39%, 85%);
-  --light-grayish-blue-hover: hsl(236, 33%, 92%);
-  --text-primary-dark: hsl(234, 11%, 52%);
-  --very-dark-grayish-blue-dark: hsl(233, 14%, 35%);
-  --very-dark-grayish-blue-darker: hsl(237, 14%, 26%); */
 }
 
-.dark-mode{
-  --bg-image: url("./images/bg-mobile-dark.jpg");
-  --background:hsl(235, 21%, 11%);
-  --text-primary:hsl(234, 11%, 52%);
+.dark-mode {
+  --bg-image: url("./images/bg-desktop-dark.jpg");
+  --background: hsl(235, 21%, 11%);
+  --text-primary: hsl(234, 11%, 52%);
   --item-background: hsl(235, 24%, 19%);
   --light-grayish-blue: hsl(234, 39%, 85%);
-
 }
 
 * {
@@ -46,31 +35,25 @@
 
 body {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   font-size: 18px;
   font-weight: 400;
   color: var(--text-primary);
   height: 100vh;
   background-color: var(--background);
 }
-.background {
+
+header {
   background-image: var(--bg-image);
+  display: flex;
   background-repeat: no-repeat;
   background-size: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100%;
-  height: 200px;
-  display: block;
-}
-header {
-  display: flex;
+  padding: 1.5rem;
   flex-direction: row;
   justify-content: space-between;
 }
-button#toggleTheme {
+
+button#toggleTheme,button#menu-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -152,7 +135,7 @@ div.li-text > span.round {
   border-radius: 50%;
   border: 2px solid var(--light-grayish-blue);
 }
-li.todo-item > button{
+li.todo-item > button {
   background-color: var(--item-background);
   border: none;
   cursor: pointer;
@@ -168,7 +151,7 @@ div.footer-list {
   padding: 0.8rem 1.3rem;
 }
 
-div.footer-list a{
+div.footer-list a {
   color: var(--text-primary);
   background: none;
   border: none;
@@ -176,8 +159,8 @@ div.footer-list a{
   text-decoration: none;
   font-weight: 700;
 }
-div.footer-list>.buttons-footer{
-  display:none
+div.footer-list > .buttons-footer {
+  display: none;
 }
 section.buttons {
   display: flex;
@@ -188,7 +171,7 @@ section.buttons {
   background-color: var(--item-background);
   border-radius: var(--border-radius);
 }
-section.buttons a{
+section.buttons a {
   color: var(--text-primary);
   font-size: 18px;
   font-weight: 700;
@@ -200,32 +183,32 @@ p.message-drag {
 }
 /* desktop */
 @media (min-width: 1024px) {
-  :root{
-    --bg-image:url("./images/bg-desktop-light.jpg");
+  :root {
+    --bg-image: url("./images/bg-desktop-light.jpg");
   }
   .background {
-    background-image: var(--bg-image); 
+    background-image: var(--bg-image);
     height: 300px; /* Ajusta la altura para desktop */
   }
   .container {
-    padding-top: 6rem ;
+    padding-top: 6rem;
     gap: 3rem;
     width: 35rem;
   }
-  section.buttons{
+  section.buttons {
     display: none;
   }
-  div.footer-list>.buttons-footer{
-    display:flex;
-    gap:2rem;
+  div.footer-list > .buttons-footer {
+    display: flex;
+    gap: 2rem;
   }
-  section.buttons-footer a{
+  section.buttons-footer a {
     color: var(--text-primary);
     font-size: 15px;
     font-weight: 700;
     text-decoration: none;
   }
-  .dark-mode{
+  .dark-mode {
     --bg-image: url("./images/bg-desktop-dark.jpg");
   }
 }
@@ -236,17 +219,12 @@ p.message-drag {
 }
 
 .round.checked {
-  background: 
-  url('./images/icon-check.svg') center no-repeat, 
-  linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%));  
+  background: url("./images/icon-check.svg") center no-repeat,
+    linear-gradient(135deg, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
 }
 
 .buttons-footer a.active,
 .buttons a.active {
   font-weight: bold;
   color: hsl(192, 100%, 67%);
-}
-.dragging {
-  opacity: 0.6;
-  background: #f0f0f0;
 }
