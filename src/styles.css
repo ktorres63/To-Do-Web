@@ -110,7 +110,8 @@ section.table-container {
   overflow: hidden;
 }
 
-.table-header, .table-body div {
+.table-header,
+.table-body > div {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
   padding: 10px;
@@ -123,28 +124,37 @@ section.table-container {
 }
 
 .table-body div {
-  background-color: var(--background);
+  background-color: var(--item-background);
 }
 
-.table-body div:nth-child(even) {
-  background-color: #f9f9f9;
+span.round {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid var(--light-grayish-blue);
 }
-
-button {
+button.delete-btn {
+  background-color: var(--item-background);
+  border: none;
   cursor: pointer;
 }
+.header-actions {
+  display: flex;
+  justify-content: center;
+}
+.actions {
+  display: flex;
+  justify-content: center;
+}
 
-
-
-
-
-
-
-
-
-
-
-
+.task{
+  display: flex;
+  flex-direction: column;
+}
+.task-title{
+  font-weight: bold;
+}
 
 
 
@@ -180,56 +190,6 @@ section.list-container {
   background-color: var(--light-grayish-blue);
   overflow: hidden;
 }
-section .tabe-header{
-  padding: 0 1.3rem;
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--background);
-}
-ul#todoList {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-ul#todoList li {
-  display: flex;
-  gap: 10px;
-  flex-direction: row;
-  background-color: var(--item-background);
-  padding: 1.3rem;
-  align-items: center;
-  justify-content: space-between;
-}
-li > span.round {
-  align-self: center;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  cursor: pointer;
-
-  border: 2px solid var(--light-grayish-blue);
-}
-
-li.task .text {
-  display: flex;
-  flex-direction: column;
-}
-li.task > button {
-  background-color: var(--item-background);
-  border: none;
-  cursor: pointer;
-}
-div.footer-list {
-  font-size: 15px;
-  width: 100%;
-  display: flex;
-  height: 3.5rem;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--item-background);
-  padding: 0.8rem 1.3rem;
-}
 
 div.footer-list a {
   color: var(--text-primary);
@@ -258,9 +218,7 @@ section.buttons a {
   text-decoration: none;
 }
 
-p.message-drag {
-  align-self: center;
-}
+
 .todo-item.completed p {
   text-decoration: line-through;
   color: gray;
