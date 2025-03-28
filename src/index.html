@@ -8,11 +8,7 @@
   <body>
     <header>
       <button id="menu-btn">
-        <img
-          id="menuIcon"
-          src="./images/icon-menu.svg"
-          alt="menu icon"
-        />
+        <img id="menuIcon" src="./images/icon-menu.svg" alt="menu icon" />
       </button>
       <h1>TODO</h1>
       <button id="toggleTheme">
@@ -23,32 +19,64 @@
         />
       </button>
     </header>
-    <aside>
-      <section class="buttons">
-        <a href="#" class="btn-All">All</a>
-        <a href="#" class="btn-active">Active</a>
-        <a href="#" class="btn-completed">Completed</a>
-      </section>
-    </aside>
-    <main>
-      <form class="todo-input">
-        <span class="round"></span>
-        <input type="text" id="newTodo" placeholder="Create a new todo..." />
-      </form>
-      <section class="list-container">
-        <ul id="todoList"></ul>
-        <!-- Add dynamic number -->
-        <div class="footer-list">
-          <p class="items-left"></p>
-          <section class="buttons-footer">
-            <a href="#" class="btn-All">All</a>
-            <a href="#" class="btn-active">Active</a>
-            <a href="#" class="btn-completed">Completed</a>
-          </section>
-          <a href="#" id="clearCompleted">Clear Completed</a>
+    <div class="container">
+      <aside>
+        <h2 class="title">Home</h2>
+        <div class="aside-link" id="today">
+          <p>📅 Today</p>
         </div>
-      </section>
-      
-    </main>
+        <div class="aside-link" id="next7">
+          <p>🗓️ Next 7 days</p>
+        </div>
+        <div class="aside-link" id="allTask">
+          <p>📁 All Task</p>
+        </div>
+        <h2 class="title">Importance</h2>
+        <div class="aside-link" id="today">
+          <p>🔴 High</p>
+        </div>
+        <div class="aside-link" id="next7">
+          <p>🟡 Medium</p>
+        </div>
+        <div class="aside-link" id="t0oday">
+          <p>🟢 Low</p>
+        </div>
+        <h2>Projects</h2>
+        <div class="aside-link" id="today">
+          <p>📌 Example</p>
+        </div>
+        <div class="aside-link" id="today">
+          <a href="#">➕ Add Project</a>
+        </div>
+      </aside>
+      <main>
+        <h2 id="link-selected">📌 Example</h2>
+        <section class="table-container">
+          <div class="table-header">
+            <span>State</span>
+            <span>Task</span>
+            <span>Date</span>
+            <span>Importance</span>
+            <span>Actions</span>
+          </div>
+          <div id="table-body" class="table-body">
+            <div class="row">
+              <span class="round"></span>
+              <span>New Task</span>
+              <span>09/11/88</span>
+              <span>🔴</span>
+              <button class="delete-btn">
+                <img src="./images/icon-cross.svg" />
+              </button>
+            </div>
+          </div>
+          
+        </section>
+
+        <div class="aside-link" id="today">
+          <a href="#">➕ Add Task</a>
+        </div>
+      </main>
+    </div>
   </body>
 </html>

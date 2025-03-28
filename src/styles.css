@@ -14,16 +14,24 @@
 
   --background: hsl(236, 33%, 92%);
   --light-grayish-blue: hsl(233, 11%, 84%);
-  --text-primary: hsl(236, 9%, 61%);
+  --text-primary: hsl(236, 8%, 36%);
   --very-dark-grayish-blue: hsl(235, 19%, 35%);
 }
 
 .dark-mode {
   --bg-image: url("./images/bg-desktop-dark.jpg");
   --background: hsl(235, 21%, 11%);
-  --text-primary: hsl(234, 11%, 52%);
+  --text-primary: hsl(0, 0%, 86%);
   --item-background: hsl(235, 24%, 19%);
   --light-grayish-blue: hsl(234, 39%, 85%);
+  --background-card: hsl(225, 45%, 24%);
+
+  --dark-very-dark-blue: hsl(235, 21%, 11%);
+  --dark-very-dark-desaturated-blue: hsl(235, 24%, 19%);
+  --dark-light-grayish-blue: hsl(234, 39%, 85%);
+  --dark-light-grayish-blue-hover: hsl(236, 33%, 92%);
+  --dark-very-dark-grayish-blue: hsl(233, 14%, 35%);
+  --dark-very-dark-grayish-blue-alt: hsl(237, 14%, 26%);
 }
 
 * {
@@ -53,7 +61,8 @@ header {
   justify-content: space-between;
 }
 
-button#toggleTheme,button#menu-btn {
+button#toggleTheme,
+button#menu-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -61,22 +70,87 @@ button#toggleTheme,button#menu-btn {
 h1 {
   position: relative;
   top: 5px;
-  letter-spacing: 0.5rem;
+  letter-spacing: 0.8rem;
   font-weight: 700;
   color: var(--title);
 }
 .container {
-  padding-top: 2.5rem;
   display: flex;
-  gap: 2.5rem;
-  flex-direction: column;
+  flex-direction: row;
 }
+aside {
+  width: 325px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--item-background);
+  height: 100vh;
+}
+aside h2 {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--bright-blue);
+}
+aside .aside-link {
+  margin-bottom: 0.5rem;
+}
+
 main {
+  padding: 18px;
+  align-items: center;
+  flex: 1;
   display: flex;
   gap: 1rem;
   flex-direction: column;
 }
+
+section.table-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+.table-header, .table-body div {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.table-header {
+  font-weight: bold;
+}
+
+.table-body div {
+  background-color: var(--background);
+}
+
+.table-body div:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+button {
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 form.todo-input {
+  align-self: flex-start;
   height: 3.5rem;
   display: flex;
   gap: 0.5rem;
@@ -100,11 +174,17 @@ form #newTodo {
 }
 section.list-container {
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: 0.1rem;
   background-color: var(--light-grayish-blue);
-  border-radius: var(--border-radius);
   overflow: hidden;
+}
+section .tabe-header{
+  padding: 0 1.3rem;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--background);
 }
 ul#todoList {
   display: flex;
@@ -114,28 +194,28 @@ ul#todoList {
 
 ul#todoList li {
   display: flex;
-  height: 3.5rem;
+  gap: 10px;
+  flex-direction: row;
   background-color: var(--item-background);
-  padding: 0.8rem 1.3rem;
-  justify-content: space-between;
+  padding: 1.3rem;
   align-items: center;
+  justify-content: space-between;
 }
-
-div.li-text {
-  display: flex;
-  align-items: end;
-  gap: 0.5rem;
-  color: var(--text-primary);
-  font-weight: 700;
-}
-div.li-text > span.round {
+li > span.round {
   align-self: center;
   width: 25px;
   height: 25px;
   border-radius: 50%;
+  cursor: pointer;
+
   border: 2px solid var(--light-grayish-blue);
 }
-li.todo-item > button {
+
+li.task .text {
+  display: flex;
+  flex-direction: column;
+}
+li.task > button {
   background-color: var(--item-background);
   border: none;
   cursor: pointer;
@@ -181,38 +261,6 @@ section.buttons a {
 p.message-drag {
   align-self: center;
 }
-/* desktop */
-@media (min-width: 1024px) {
-  :root {
-    --bg-image: url("./images/bg-desktop-light.jpg");
-  }
-  .background {
-    background-image: var(--bg-image);
-    height: 300px; /* Ajusta la altura para desktop */
-  }
-  .container {
-    padding-top: 6rem;
-    gap: 3rem;
-    width: 35rem;
-  }
-  section.buttons {
-    display: none;
-  }
-  div.footer-list > .buttons-footer {
-    display: flex;
-    gap: 2rem;
-  }
-  section.buttons-footer a {
-    color: var(--text-primary);
-    font-size: 15px;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .dark-mode {
-    --bg-image: url("./images/bg-desktop-dark.jpg");
-  }
-}
-
 .todo-item.completed p {
   text-decoration: line-through;
   color: gray;

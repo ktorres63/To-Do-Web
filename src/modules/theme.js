@@ -1,5 +1,5 @@
-import sunIcon from "./images/icon-sun.svg";
-import moonIcon from "./images/icon-moon.svg";
+import sunIcon from "../images/icon-sun.svg";
+import moonIcon from "../images/icon-moon.svg";
 
 const body = document.body;
 const icon = document.getElementById("darkModeIcon");
