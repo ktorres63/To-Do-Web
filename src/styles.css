@@ -85,6 +85,10 @@ aside {
   flex-direction: column;
   background-color: var(--item-background);
   height: 100vh;
+  transition: opacity 0.3s ease-in-out;
+}
+.hidden {
+  display: none;
 }
 aside h2 {
   margin-bottom: 1rem;
@@ -148,16 +152,13 @@ button.delete-btn {
   justify-content: center;
 }
 
-.task{
+.task {
   display: flex;
   flex-direction: column;
 }
-.task-title{
+.task-title {
   font-weight: bold;
 }
-
-
-
 
 form.todo-input {
   align-self: flex-start;
@@ -217,7 +218,6 @@ section.buttons a {
   font-weight: 700;
   text-decoration: none;
 }
-
 
 .todo-item.completed p {
   text-decoration: line-through;
