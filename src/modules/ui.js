@@ -1,24 +1,35 @@
-// document.addEventListener("DOMContentLoaded", function () {
-//   const menuBtn = document.getElementById("menu-btn");
-//   const aside = document.getElementById("aside-menu");
+export function setupUI() {
+  const dialog = document.getElementById("project-dialog");
+  const openDialogBtn = document.getElementById("add-project");
+  const cancelBtn = document.getElementById("cancel-btn");
+  const form = dialog.querySelector("form");
+  const projectNameInput = document.getElementById("project-name");
+  const projectList = document.getElementById("project-list");
 
-//   if (menuBtn && aside) {
-//     menuBtn.addEventListener("click", function () {
-//       aside.classList.toggle("hidden");
-//     });
-//   } else {
-//     console.error("El botón o el aside no existen en el DOM.");
-//   }
-// });
+  // Abrir diálogo
+  openDialogBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    dialog.showModal();
+  });
 
-// const dialog = document.getElementById("projectDialog");
-// const openDialogBtn = document.getElementById("add-project");
-// const cancelBtn = document.getElementById("cancelBtn");
+  // Cerrar diálogo
+  cancelBtn.addEventListener("click", () => {
+    dialog.close();
+  });
 
-// openDialogBtn.addEventListener("click", () => {
-//   dialog.showModal();
-// });
+  // Manejar envío del formulario
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-// cancelBtn.addEventListener("click", () => {
-//   dialog.close();
-// });
+    const projectName = projectNameInput.value.trim();
+    if (projectName === "") return;
+
+    const newProject = document.createElement("div");
+    newProject.classList.add("aside-link");
+    newProject.innerHTML = `<p>📌 ${projectName}</p>`;
+
+    projectList.appendChild(newProject);
+    projectNameInput.value = "";
+    dialog.close();
+  });
+}
