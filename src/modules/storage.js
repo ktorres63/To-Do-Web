@@ -13,9 +13,12 @@ export default class Storage{
     projects.push(project)
     this.saveProjects(projects)
   }
-  static removeProject(name){
+  static removeProject(index){
     let projects = this.getProjects();
-    projects = projects.filter( project => project.name !== name);
-    this.saveProjects();
+
+    if(index >= 0 && index < projects.length){
+      projects.splice(index,1);
+      this.saveProjects(projects)
+    }
   }
 }

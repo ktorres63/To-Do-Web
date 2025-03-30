@@ -11,8 +11,8 @@ export default class StorageService {
   addProject(project){
     this.storage.addProject(project);
   }
-  removeProject(name){
-    this.storage.removeProject(name);
+  removeProject(index){
+    this.storage.removeProject(index);
   }
 
 

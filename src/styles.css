@@ -101,6 +101,11 @@ aside .aside-link {
 aside .aside-link:hover {
   background-color: var(--background);
 }
+#project-list .project-item{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 
 dialog {
   color:var(--text-primary);
@@ -139,12 +144,12 @@ input#project-name {
 }
 
 .dialog-buttons button:first-child {
-  background-color: #4caf50;
+  background-color: #f44336;
   color: white;
 }
 
 .dialog-buttons button:last-child {
-  background-color: #f44336;
+  background-color: #4caf50;
   color: white;
 }
 
