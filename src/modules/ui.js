@@ -1,4 +1,6 @@
 import Project from "./project.js";
+import Todo from "./todo.js";
+
 import crossIcon from "../images/icon-cross.svg";
 
 export default class UI {
@@ -6,20 +8,23 @@ export default class UI {
     this.storageService = storageService;
     this.projectList = document.getElementById("project-list");
     this.linkSelected = document.getElementById("link-selected");
-    
-    
+
     this.projectDialog = document.getElementById("project-dialog");
     this.addProjectBtn = document.getElementById("add-project");
     this.projectCancelBtn = document.getElementById("cancel-btn");
     this.projectForm = document.getElementById("project-form");
     this.projectNameInput = document.getElementById("project-name");
-    this.asideLinks = document.querySelectorAll(".aside-link");
-    
-    this.selectedProjectIndex = null;
-    
-    
-    this.taskTable = document.getElementById("table-body")
 
+    this.asideLinks = document.querySelectorAll(".aside-link");
+
+    this.taskTable = document.getElementById("table-body");
+
+    this.taskDialog = document.getElementById("task-dialog");
+    this.taskForm = document.getElementById("task-form");
+    this.addTaskBtn = document.getElementById("add-task-btn");
+    this.cancelTaskBtn = document.getElementById("cancel-task");
+
+    this.selectedProjectIndex = null;
 
     this.setupEventListener();
     this.render();
@@ -41,24 +46,55 @@ export default class UI {
 
     this.projectList.addEventListener("click", (e) => {
       let targetElement = e.target;
-    
+
       if (targetElement.tagName === "IMG") {
         targetElement = targetElement.closest(".delete-btn");
       }
-    
+
       if (targetElement && targetElement.classList.contains("delete-btn")) {
         const index = targetElement.parentElement.dataset.index;
         this.removeProject(index);
-        return; 
+        return;
       }
-      
+
       const projectItem = e.target.closest(".project-item");
       if (projectItem) {
         const index = projectItem.dataset.index;
         this.displayProject(index);
       }
     });
-    
+
+    this.addTaskBtn.addEventListener("click", () => {
+      if (this.selectedProjectIndex === null) {
+        alert("Select a project first");
+        return;
+      }
+      this.taskDialog.showModal();
+    });
+    this.cancelTaskBtn.addEventListener("click", () => {
+      this.taskDialog.close();
+    });
+    this.taskForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.addTask();
+    });
+  }
+  addTask() {
+    console.log("in addTASK");
+
+    const title = document.getElementById("task-title").value.trim();
+    const description = document.getElementById("task-desc").value.trim();
+    const dueDate = document.getElementById("task-date").value;
+    const priority = document.getElementById("task-priority").value;
+
+    if (!title || !dueDate) return;
+
+    const newTask = new Todo(title, description, dueDate, priority);
+    this.storageService.addTaskToProject(this.selectedProjectIndex, newTask);
+
+    this.renderTasks();
+    this.taskForm.reset();
+    this.taskDialog.close();
   }
   addProject() {
     const projectName = this.projectNameInput.value.trim();
@@ -71,22 +107,15 @@ export default class UI {
     this.projectNameInput.value = "";
     this.projectDialog.close();
   }
-  displayProject(index) {
-    this.selectedProjectIndex = index;
-    const projects = this.storageService.getProjects();
-    const selectedProject = projects[index];
-
-    if (!selectedProject) return;
-    const tasks = this.storageService.getTasksForProject(index);
-
-    this.linkSelected.innerHTML = `📌 ${selectedProject.name}`;
-    
-    const tableBody = document.getElementById("table-body");
-    tableBody.innerHTML = "";
-
-    tasks.forEach((task) =>{
+  renderTasks() {
+    this.taskTable.innerHTML = "";
+    if (this.selectedProjectIndex == null) return;
+    const tasks = this.storageService.getTasksForProject(
+      this.selectedProjectIndex
+    );
+    tasks.forEach((task) => {
       const row = document.createElement("div");
-      row.classList.add("row")
+      row.classList.add("row");
 
       row.innerHTML = `
           <span class="round"></span>
@@ -102,12 +131,19 @@ export default class UI {
               </button>
           </span>
       `;
-      tableBody.appendChild(row);
+      this.taskTable.appendChild(row);
+    });
+  }
+  displayProject(index) {
+    this.selectedProjectIndex = index;
+    const projects = this.storageService.getProjects();
+    const selectedProject = projects[index];
 
-    })
-    
-    
-    console.log(tasks);
+    if (!selectedProject) return;
+
+    this.linkSelected.innerHTML = `📌 ${selectedProject.name}`;
+
+    this.renderTasks();
   }
 
   displaySelectedLink(element) {
@@ -118,7 +154,7 @@ export default class UI {
   }
 
   render() {
-    this.projectList.innerHTML = "";
+    this.projectList.replaceChildren();
     const projects = this.storageService.getProjects();
     projects.forEach((project, index) => {
       const projectDiv = document.createElement("div");
@@ -135,6 +171,12 @@ export default class UI {
   }
   removeProject(index) {
     this.storageService.removeProject(index);
+    // Si se eliminó el proyecto seleccionado, reiniciar la selección
+    if (this.selectedProjectIndex == index) {
+      this.selectedProjectIndex = null;
+      this.linkSelected.innerHTML = "📌 Select a project";
+      this.taskTable.innerHTML = ""; // Limpia las tareas también
+    }
     this.render();
   }
 }

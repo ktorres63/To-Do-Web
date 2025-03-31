@@ -5,25 +5,25 @@ export default class Storage{
     return JSON.parse(localStorage.getItem("projects")) || []
   }
 
-  static saveProjects(projects){
+  static save(projects){
     localStorage.setItem("projects", JSON.stringify(projects))
   }
   static addProject(project){
     const projects = this.getProjects();
     projects.push(project)
-    this.saveProjects(projects)
+    this.save(projects)
   }
   static removeProject(index){
     let projects = this.getProjects();
     if(index >= 0 && index < projects.length){
       projects.splice(index,1);
-      this.saveProjects(projects)
+      this.save(projects)
     }
   }
   static addTaskToProject(projectIndex, task){
     const projects = this.getProjects();
     projects[projectIndex].todos.push(task);
-    this.saveProjects(projects);
+    this.save(projects);
   }
 
   static getTasksForProject(projectIndex){
@@ -34,6 +34,6 @@ export default class Storage{
   static removeTaskToProject(projectIndex, taskIndex){
     const projects = this.getProjects();
     projects[projectIndex].todos.splice(taskIndex,1);
-    this.saveProjects(projects)
+    this.save(projects)
   }
 }
