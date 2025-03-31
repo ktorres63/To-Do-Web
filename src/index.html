@@ -46,10 +46,10 @@
          
         </div>
         <div class="aside-link" id="add-project">
-          <a href="#">➕ Add Project</a>
+          <a href="#" >➕ Add Project</a>
         </div>
         <dialog id="project-dialog">
-          <form method="dialog">
+          <form  id="project-form" method="dialog">
             <h2>Add New Project</h2>
             <label for="project-name">Project Name:</label>
             <input type="text" id="project-name" name="project-name" required />
@@ -91,9 +91,26 @@
           </div>
         </section>
 
-        <div class="aside-link" id="today">
+        <div class="aside-link" id="add-task-btn">
           <a href="#">➕ Add Task</a>
         </div>
+        <dialog id="task-dialog">
+          <form id="task-form" method="dialog">
+            <h3>Add Task</h3>
+            <label>Title: <input type="text" id="task-title" required /></label>
+            <label>Description: <textarea id="task-desc"></textarea></label>
+            <label>Due Date: <input type="date" id="task-date" required /></label>
+            <label>Priority:
+              <select id="task-priority">
+                <option value="🔴 High">🔴 High</option>
+                <option value="🟡 Medium">🟡 Medium</option>
+                <option value="🟢 Low">🟢 Low</option>
+              </select>
+            </label>
+            <button type="submit">Add Task</button>
+            <button type="button" id="cancel-task">Cancel</button>
+          </form>
+        </dialog>
       </main>
     </div>
   </body>

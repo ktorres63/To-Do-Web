@@ -1,30 +1,40 @@
 import Project from "./project.js";
-import crossIcon from "../images/icon-cross.svg"
+import crossIcon from "../images/icon-cross.svg";
 
 export default class UI {
   constructor(storageService) {
     this.storageService = storageService;
     this.projectList = document.getElementById("project-list");
-    this.dialog = document.getElementById("project-dialog");
-    this.openDialogBtn = document.getElementById("add-project");
-    this.cancelBtn = document.getElementById("cancel-btn");
-    this.form = this.dialog.querySelector("form");
+    this.linkSelected = document.getElementById("link-selected");
+    
+    
+    this.projectDialog = document.getElementById("project-dialog");
+    this.addProjectBtn = document.getElementById("add-project");
+    this.projectCancelBtn = document.getElementById("cancel-btn");
+    this.projectForm = document.getElementById("project-form");
     this.projectNameInput = document.getElementById("project-name");
+    this.asideLinks = document.querySelectorAll(".aside-link");
+    
+    this.selectedProjectIndex = null;
+    
+    
+    this.taskTable = document.getElementById("table-body")
+
 
     this.setupEventListener();
-    this.loadProjects();
+    this.render();
   }
   setupEventListener() {
-    this.openDialogBtn.addEventListener("click", (e) => {
+    this.addProjectBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      this.dialog.showModal();
+      this.projectDialog.showModal();
     });
 
-    this.cancelBtn.addEventListener("click", () => {
-      this.dialog.close();
+    this.projectCancelBtn.addEventListener("click", () => {
+      this.projectDialog.close();
     });
 
-    this.form.addEventListener("submit", (e) => {
+    this.projectForm.addEventListener("submit", (e) => {
       e.preventDefault();
       this.addProject();
     });
@@ -38,8 +48,14 @@ export default class UI {
     
       if (targetElement && targetElement.classList.contains("delete-btn")) {
         const index = targetElement.parentElement.dataset.index;
-        console.log(index);
         this.removeProject(index);
+        return; 
+      }
+      
+      const projectItem = e.target.closest(".project-item");
+      if (projectItem) {
+        const index = projectItem.dataset.index;
+        this.displayProject(index);
       }
     });
     
@@ -51,36 +67,74 @@ export default class UI {
     const newProject = new Project(projectName);
     this.storageService.addProject(newProject);
 
-    this.renderProjects();
+    this.render();
     this.projectNameInput.value = "";
-    this.dialog.close();
+    this.projectDialog.close();
+  }
+  displayProject(index) {
+    this.selectedProjectIndex = index;
+    const projects = this.storageService.getProjects();
+    const selectedProject = projects[index];
+
+    if (!selectedProject) return;
+    const tasks = this.storageService.getTasksForProject(index);
+
+    this.linkSelected.innerHTML = `📌 ${selectedProject.name}`;
+    
+    const tableBody = document.getElementById("table-body");
+    tableBody.innerHTML = "";
+
+    tasks.forEach((task) =>{
+      const row = document.createElement("div");
+      row.classList.add("row")
+
+      row.innerHTML = `
+          <span class="round"></span>
+          <div class="task">
+              <span class="task-title">${task.title}</span>
+              <span class="task-description">${task.description}</span>
+          </div>
+          <span>${task.date}</span>
+          <span>${task.importance}</span>
+          <span class="actions">
+              <button class="delete-btn">
+                  <img src=${crossIcon} />
+              </button>
+          </span>
+      `;
+      tableBody.appendChild(row);
+
+    })
+    
+    
+    console.log(tasks);
   }
 
-  renderProjects() {
+  displaySelectedLink(element) {
+    const titleElement = element.querySelector("p");
+    if (titleElement) {
+      this.linkSelected.innerHTML = titleElement.innerHTML;
+    }
+  }
+
+  render() {
     this.projectList.innerHTML = "";
     const projects = this.storageService.getProjects();
-    projects.forEach((project, index) =>{
+    projects.forEach((project, index) => {
       const projectDiv = document.createElement("div");
-      projectDiv.classList.add("aside-link");
-      projectDiv.classList.add("project-item");
+      projectDiv.classList.add("aside-link", "project-item");
 
-      projectDiv.dataset.index = index
+      projectDiv.dataset.index = index;
       projectDiv.innerHTML = ` 
       <p>📌 ${project.name}</p>
       <button class="delete-btn">
        <img src=${crossIcon} />
       </button>`;
       this.projectList.appendChild(projectDiv);
-
-    })
-
+    });
   }
-  removeProject(index){
+  removeProject(index) {
     this.storageService.removeProject(index);
-    this.renderProjects();
-  }
-
-  loadProjects() {
-   this.renderProjects();
+    this.render();
   }
 }

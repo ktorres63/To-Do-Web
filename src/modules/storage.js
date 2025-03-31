@@ -15,10 +15,25 @@ export default class Storage{
   }
   static removeProject(index){
     let projects = this.getProjects();
-
     if(index >= 0 && index < projects.length){
       projects.splice(index,1);
       this.saveProjects(projects)
     }
+  }
+  static addTaskToProject(projectIndex, task){
+    const projects = this.getProjects();
+    projects[projectIndex].todos.push(task);
+    this.saveProjects(projects);
+  }
+
+  static getTasksForProject(projectIndex){
+    const projects = this.getProjects();
+    return projects[projectIndex]?.todos || []
+
+  }
+  static removeTaskToProject(projectIndex, taskIndex){
+    const projects = this.getProjects();
+    projects[projectIndex].todos.splice(taskIndex,1);
+    this.saveProjects(projects)
   }
 }
