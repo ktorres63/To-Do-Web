@@ -247,17 +247,7 @@ section.list-container {
   overflow: hidden;
 }
 
-div.footer-list a {
-  color: var(--text-primary);
-  background: none;
-  border: none;
-  font-size: 15px;
-  text-decoration: none;
-  font-weight: 700;
-}
-div.footer-list > .buttons-footer {
-  display: none;
-}
+
 section.buttons {
   display: flex;
   height: 3.5rem;
@@ -274,7 +264,7 @@ section.buttons a {
   text-decoration: none;
 }
 
-.todo-item.completed p {
+.task.completed span {
   text-decoration: line-through;
   color: gray;
 }

@@ -23,4 +23,7 @@ export default class StorageService {
   removeTaskToProject(projectIndex, taskIndex){
     this.storage.removeTaskToProject(projectIndex, taskIndex);
   }
+  saveTasks(projectIndex, tasks){
+    this.storage.saveTasks(projectIndex, tasks);
+  }
 }

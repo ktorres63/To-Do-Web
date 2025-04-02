@@ -78,10 +78,29 @@ export default class UI {
       e.preventDefault();
       this.addTask();
     });
-  }
-  addTask() {
-    console.log("in addTASK");
 
+    this.taskTable.addEventListener("click", (e) => {
+      const round = e.target.closest(".round");
+      if (!round) return;
+
+      const taskRow = round.closest(".row");
+      if (!taskRow) return;
+
+      const index = Array.from(this.taskTable.children).indexOf(taskRow);
+      console.log(`Marcado: ${index}`);
+      this.toggleTaskComplete(index);
+    });
+  }
+  toggleTaskComplete(index) {
+    const tasks = this.storageService.getTasksForProject(this.selectedProjectIndex);
+    const updatedTask = { ...tasks[index], completed: !tasks[index].completed };  // Crea una copia con el cambio
+    tasks[index] = updatedTask;  // Reemplaza la tarea actual
+
+    this.storageService.saveTasks(this.selectedProjectIndex, tasks);
+    this.renderTasks();
+  }
+  
+  addTask() {
     const title = document.getElementById("task-title").value.trim();
     const description = document.getElementById("task-desc").value.trim();
     const dueDate = document.getElementById("task-date").value;
@@ -113,20 +132,21 @@ export default class UI {
     const tasks = this.storageService.getTasksForProject(
       this.selectedProjectIndex
     );
-    tasks.forEach((task) => {
+    tasks.forEach((task, index) => {
       const row = document.createElement("div");
       row.classList.add("row");
-
       row.innerHTML = `
-          <span class="round"></span>
-          <div class="task">
+          <span  class="round ${
+            task.completed ? "checked" : ""
+          }" data-index="${index}"></span>
+          <div class="task ${task.completed ? "completed" : ""}">
               <span class="task-title">${task.title}</span>
               <span class="task-description">${task.description}</span>
           </div>
-          <span>${task.date}</span>
-          <span>${task.importance}</span>
+          <span>${task.dueDate}</span>
+          <span>${task.priority}</span>
           <span class="actions">
-              <button class="delete-btn">
+              <button class="delete-btn" data-index="${index}">
                   <img src=${crossIcon} />
               </button>
           </span>
@@ -171,11 +191,10 @@ export default class UI {
   }
   removeProject(index) {
     this.storageService.removeProject(index);
-    // Si se eliminó el proyecto seleccionado, reiniciar la selección
     if (this.selectedProjectIndex == index) {
       this.selectedProjectIndex = null;
       this.linkSelected.innerHTML = "📌 Select a project";
-      this.taskTable.innerHTML = ""; // Limpia las tareas también
+      this.taskTable.innerHTML = "";
     }
     this.render();
   }
