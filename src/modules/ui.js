@@ -24,6 +24,8 @@ export default class UI {
     this.addTaskBtn = document.getElementById("add-task-btn");
     this.cancelTaskBtn = document.getElementById("cancel-task");
 
+    this.deleteButtons = this.taskTable.querySelectorAll(".delete-btn");
+
     this.selectedProjectIndex = null;
 
     this.setupEventListener();
@@ -69,6 +71,7 @@ export default class UI {
         alert("Select a project first");
         return;
       }
+
       this.taskDialog.showModal();
     });
     this.cancelTaskBtn.addEventListener("click", () => {
@@ -90,16 +93,31 @@ export default class UI {
       console.log(`Marcado: ${index}`);
       this.toggleTaskComplete(index);
     });
+
+    this.taskTable.addEventListener("click", (e) => {
+      const deleteBtn = e.target.closest(".delete-btn");
+      if (!deleteBtn) return;
+
+      const index = deleteBtn.dataset.index;
+      this.deleteTask(index);
+    });
   }
+  deleteTask(index) {
+    this.storageService.removeTaskToProject(this.selectedProjectIndex, index);
+    this.renderTasks();
+  }
+
   toggleTaskComplete(index) {
-    const tasks = this.storageService.getTasksForProject(this.selectedProjectIndex);
-    const updatedTask = { ...tasks[index], completed: !tasks[index].completed };  // Crea una copia con el cambio
-    tasks[index] = updatedTask;  // Reemplaza la tarea actual
+    const tasks = this.storageService.getTasksForProject(
+      this.selectedProjectIndex
+    );
+    const updatedTask = { ...tasks[index], completed: !tasks[index].completed };
+    tasks[index] = updatedTask;
 
     this.storageService.saveTasks(this.selectedProjectIndex, tasks);
     this.renderTasks();
   }
-  
+
   addTask() {
     const title = document.getElementById("task-title").value.trim();
     const description = document.getElementById("task-desc").value.trim();
@@ -153,6 +171,7 @@ export default class UI {
       `;
       this.taskTable.appendChild(row);
     });
+
   }
   displayProject(index) {
     this.selectedProjectIndex = index;
@@ -181,13 +200,14 @@ export default class UI {
       projectDiv.classList.add("aside-link", "project-item");
 
       projectDiv.dataset.index = index;
-      projectDiv.innerHTML = ` 
+      projectDiv.innerHTML = `
       <p>📌 ${project.name}</p>
       <button class="delete-btn">
        <img src=${crossIcon} />
       </button>`;
       this.projectList.appendChild(projectDiv);
     });
+    // this.addTaskBtn.classList.toggle("hidden", this.selectedProjectIndex === null);
   }
   removeProject(index) {
     this.storageService.removeProject(index);

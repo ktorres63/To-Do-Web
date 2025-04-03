@@ -136,7 +136,7 @@ input#project-name {
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-.dialog-buttons button {
+.dialog-buttons button, .button-task{
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
@@ -153,6 +153,15 @@ input#project-name {
   color: white;
 }
 
+#task-form{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.task-buttons{
+  display: flex;
+  justify-content: space-between;
+}
 main {
   padding: 18px;
   align-items: center;
@@ -278,4 +287,13 @@ section.buttons a {
 .buttons a.active {
   font-weight: bold;
   color: hsl(192, 100%, 67%);
+}
+
+.button-task.green{
+  background-color: #4caf50;
+  color: white;
+}
+.button-task.red{
+  background-color: #f44336;
+  color: white;
 }
