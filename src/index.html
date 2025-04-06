@@ -42,14 +42,12 @@
           <p>🟢 Low</p>
         </div>
         <h2>Projects</h2>
-        <div id="project-list">
-         
-        </div>
+        <div id="project-list"></div>
         <div class="aside-link" id="add-project">
-          <a href="#" >➕ Add Project</a>
+          <a href="#">➕ Add Project</a>
         </div>
         <dialog id="project-dialog">
-          <form  id="project-form" method="dialog">
+          <form id="project-form" method="dialog">
             <h2>Add New Project</h2>
             <label for="project-name">Project Name:</label>
             <input type="text" id="project-name" name="project-name" required />
@@ -61,7 +59,7 @@
         </dialog>
       </aside>
       <main>
-        <h2 id="link-selected">📌 Example</h2>
+        <h2 id="link-selected">📌 Helloo </h2>
         <section class="table-container">
           <div class="table-header">
             <span>State</span>
@@ -70,12 +68,10 @@
             <span>Importance</span>
             <span class="header-actions">Actions</span>
           </div>
-          <div id="table-body" class="table-body">
-            
-          </div>
+          <div id="table-body" class="table-body"></div>
         </section>
 
-        <div class="aside-link" id="add-task-btn">
+        <div class="aside-link hidden" id="add-task-btn">
           <a href="#">➕ Add Task</a>
         </div>
         <dialog id="task-dialog">
@@ -83,8 +79,11 @@
             <h3>Add Task</h3>
             <label>Title: <input type="text" id="task-title" required /></label>
             <label>Description: <textarea id="task-desc"></textarea></label>
-            <label>Due Date: <input type="date" id="task-date" required /></label>
-            <label>Priority:
+            <label
+              >Due Date: <input type="date" id="task-date" required
+            /></label>
+            <label
+              >Priority:
               <select id="task-priority">
                 <option value="🔴 High">🔴 High</option>
                 <option value="🟡 Medium">🟡 Medium</option>
@@ -92,7 +91,9 @@
               </select>
             </label>
             <div class="task-buttons">
-              <button class="button-task red" type="button" id="cancel-task">Cancel</button>
+              <button class="button-task red" type="button" id="cancel-task">
+                Cancel
+              </button>
               <button class="button-task green" type="submit">Add Task</button>
             </div>
           </form>

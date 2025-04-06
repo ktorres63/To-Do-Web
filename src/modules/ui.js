@@ -31,6 +31,7 @@ export default class UI {
     this.setupEventListener();
     this.render();
   }
+  
   setupEventListener() {
     this.addProjectBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -61,8 +62,10 @@ export default class UI {
 
       const projectItem = e.target.closest(".project-item");
       if (projectItem) {
+        this.addTaskBtn.classList.remove("hidden")
         const index = projectItem.dataset.index;
         this.displayProject(index);
+        console.log("slected a item")
       }
     });
 
@@ -171,7 +174,6 @@ export default class UI {
       `;
       this.taskTable.appendChild(row);
     });
-
   }
   displayProject(index) {
     this.selectedProjectIndex = index;
