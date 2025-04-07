@@ -34,18 +34,6 @@ export default class Storage{
     const projects = this.getProjects();
     return projects[projectIndex]?.todos || []
   }
-
-  // static getTasksForProject(projectIndex){
-  //   const projects = this.getProjects();
-  //   const tasks = projects[projectIndex]?.todos || []
-
-  //   return tasks.map(task => {
-  //     return new Todo(task.title, task.description, task.dueDate, task.priority, task.notes, task.completed)
-  //   })
-
-  // }
-
-
   static removeTaskToProject(projectIndex, taskIndex){
     const projects = this.getProjects();
     projects[projectIndex].todos.splice(taskIndex,1);

@@ -1,6 +1,6 @@
 import Project from "./project.js";
 import Todo from "./todo.js";
-
+import { isToday, parseISO } from 'date-fns';
 import crossIcon from "../images/icon-cross.svg";
 
 export default class UI {
@@ -14,19 +14,22 @@ export default class UI {
     this.projectCancelBtn = document.getElementById("cancel-btn");
     this.projectForm = document.getElementById("project-form");
     this.projectNameInput = document.getElementById("project-name");
-
     this.asideLinks = document.querySelectorAll(".aside-link");
-
     this.taskTable = document.getElementById("table-body");
-
     this.taskDialog = document.getElementById("task-dialog");
     this.taskForm = document.getElementById("task-form");
     this.addTaskBtn = document.getElementById("add-task-btn");
     this.cancelTaskBtn = document.getElementById("cancel-task");
-
     this.deleteButtons = this.taskTable.querySelectorAll(".delete-btn");
-
     this.selectedProjectIndex = null;
+
+    // Filters:
+    this.todayFilter = document.getElementById("today")
+    this.nextSevenFilter = document.getElementById("next7")
+    this.AllTaskFilter = document.getElementById("allTask")
+    this.hightImportanceFilter = document.getElementById("importance-high")
+    this.mediumImportanceFilter = document.getElementById("importance-medium")
+    this.lowImportanceFilter = document.getElementById("importance-low")
 
     this.setupEventListener();
     this.render();
@@ -37,6 +40,10 @@ export default class UI {
       e.preventDefault();
       this.projectDialog.showModal();
     });
+    this.todayFilter.addEventListener("click", ()=>{
+      this.showTodayTasks();
+      console.log("press Today");
+    })
 
     this.projectCancelBtn.addEventListener("click", () => {
       this.projectDialog.close();
@@ -92,9 +99,10 @@ export default class UI {
       const taskRow = round.closest(".row");
       if (!taskRow) return;
 
-      const index = Array.from(this.taskTable.children).indexOf(taskRow);
-      console.log(`Marcado: ${index}`);
-      this.toggleTaskComplete(index);
+      if (e.target.classList.contains("round")) {
+        const taskId = e.target.dataset.id;
+        this.toggleTaskComplete(taskId);
+      }
     });
 
     this.taskTable.addEventListener("click", (e) => {
@@ -105,20 +113,42 @@ export default class UI {
       this.deleteTask(index);
     });
   }
+  getAllTasksFromAllProjects(){
+    const projects = this.storageService.getProjects();
+    return projects.flatMap(project => project.todos);
+  }
   deleteTask(index) {
     this.storageService.removeTaskToProject(this.selectedProjectIndex, index);
     this.renderTasks();
   }
+  showTodayTasks(){
+    this.linkSelected.innerHTML = `📅 Today`;
+    this.selectedProjectIndex = null;
+    const todayTasks = this.getAllTasksFromAllProjects().filter(task => isToday(parseISO(task.dueDate))) 
+    console.log(`today tasks ${todayTasks[0]}`);
+    this.renderTasks(todayTasks)
+  }
 
-  toggleTaskComplete(index) {
-    const tasks = this.storageService.getTasksForProject(
-      this.selectedProjectIndex
-    );
-    const updatedTask = { ...tasks[index], completed: !tasks[index].completed };
-    tasks[index] = updatedTask;
+  toggleTaskComplete(taskId) {
+    const projects = this.storageService.getProjects();
 
-    this.storageService.saveTasks(this.selectedProjectIndex, tasks);
-    this.renderTasks();
+    for(let i = 0; i< projects.length; i++){
+      const tasks = projects[i].todos;
+      const taskIndex = tasks.findIndex(task => task.id === taskId)
+      
+      if(taskIndex != -1){
+        tasks[taskIndex].completed =!tasks[taskIndex].completed
+        this.storageService.saveProjects(projects)
+        
+        if (this.selectedProjectIndex === null) {
+          this.showTodayTasks(); 
+        } else {
+          this.renderTasks();
+        }
+        return;
+      }
+    }
+
   }
 
   addTask() {
@@ -147,34 +177,37 @@ export default class UI {
     this.projectNameInput.value = "";
     this.projectDialog.close();
   }
-  renderTasks() {
+  renderTasks(tasks = null) {
     this.taskTable.innerHTML = "";
-    if (this.selectedProjectIndex == null) return;
-    const tasks = this.storageService.getTasksForProject(
-      this.selectedProjectIndex
-    );
+  
+    if (!tasks) {
+      if (this.selectedProjectIndex == null) return;
+      tasks = this.storageService.getTasksForProject(this.selectedProjectIndex);
+    }
+  
     tasks.forEach((task, index) => {
       const row = document.createElement("div");
       row.classList.add("row");
       row.innerHTML = `
-          <span  class="round ${
-            task.completed ? "checked" : ""
-          }" data-index="${index}"></span>
-          <div class="task ${task.completed ? "completed" : ""}">
-              <span class="task-title">${task.title}</span>
-              <span class="task-description">${task.description}</span>
-          </div>
-          <span>${task.dueDate}</span>
-          <span>${task.priority}</span>
-          <span class="actions">
-              <button class="delete-btn" data-index="${index}">
-                  <img src=${crossIcon} />
-              </button>
-          </span>
+        <span class="round ${task.completed ? "checked" : ""}" data-id="${task.id}"></span>
+        <div class="task ${task.completed ? "completed" : ""}">
+          <span class="task-title">${task.title}</span>
+          <span class="task-description">${task.description}</span>
+        </div>
+        <span>${task.dueDate}</span>
+        <span>${task.priority}</span>
+        <span class="actions">
+          <button class="delete-btn" data-id="${task.id}">
+            <img src=${crossIcon} />
+          </button>
+        </span>
       `;
       this.taskTable.appendChild(row);
     });
+    this.addTaskBtn.classList.toggle("hidden", this.selectedProjectIndex === null);
+
   }
+  
   displayProject(index) {
     this.selectedProjectIndex = index;
     const projects = this.storageService.getProjects();
@@ -209,7 +242,6 @@ export default class UI {
       </button>`;
       this.projectList.appendChild(projectDiv);
     });
-    // this.addTaskBtn.classList.toggle("hidden", this.selectedProjectIndex === null);
   }
   removeProject(index) {
     this.storageService.removeProject(index);
