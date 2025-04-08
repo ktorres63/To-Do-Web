@@ -1,6 +1,12 @@
 import Project from "./project.js";
 import Todo from "./todo.js";
-import { isToday, parseISO } from 'date-fns';
+import {
+  parseISO,
+  isWithinInterval,
+  addDays,
+  startOfDay,
+  isToday,
+} from "date-fns";
 import crossIcon from "../images/icon-cross.svg";
 
 export default class UI {
@@ -24,27 +30,43 @@ export default class UI {
     this.selectedProjectIndex = null;
 
     // Filters:
-    this.todayFilter = document.getElementById("today")
-    this.nextSevenFilter = document.getElementById("next7")
-    this.AllTaskFilter = document.getElementById("allTask")
-    this.hightImportanceFilter = document.getElementById("importance-high")
-    this.mediumImportanceFilter = document.getElementById("importance-medium")
-    this.lowImportanceFilter = document.getElementById("importance-low")
+    this.activeFilter = null;
+    this.todayFilter = document.getElementById("today");
+    this.nextSevenFilter = document.getElementById("next7");
+    this.allTaskFilter = document.getElementById("allTask");
+    this.hightImportanceFilter = document.getElementById("importance-high");
+    this.mediumImportanceFilter = document.getElementById("importance-medium");
+    this.lowImportanceFilter = document.getElementById("importance-low");
 
     this.setupEventListener();
     this.render();
   }
-  
+
   setupEventListener() {
     this.addProjectBtn.addEventListener("click", (e) => {
       e.preventDefault();
       this.projectDialog.showModal();
     });
-    this.todayFilter.addEventListener("click", ()=>{
-      this.showTodayTasks();
+    this.todayFilter.addEventListener("click", () => {
+      this.filterTodayTasks();
       console.log("press Today");
-    })
-
+    });
+    this.nextSevenFilter.addEventListener("click", () => {
+      this.filterSevenDays();
+      console.log("press Seven");
+    });
+    this.allTaskFilter.addEventListener("click", () => {
+      this.filterAllTasks();
+    });
+    this.hightImportanceFilter.addEventListener("click", () => {
+      this.filterHigh();
+    });
+    this.mediumImportanceFilter.addEventListener("click", () => {
+      this.filterMedium();
+    });
+    this.lowImportanceFilter.addEventListener("click", () => {
+      this.filterLow();
+    });
     this.projectCancelBtn.addEventListener("click", () => {
       this.projectDialog.close();
     });
@@ -69,10 +91,10 @@ export default class UI {
 
       const projectItem = e.target.closest(".project-item");
       if (projectItem) {
-        this.addTaskBtn.classList.remove("hidden")
+        this.addTaskBtn.classList.remove("hidden");
         const index = projectItem.dataset.index;
         this.displayProject(index);
-        console.log("slected a item")
+        console.log("slected a item");
       }
     });
 
@@ -109,46 +131,128 @@ export default class UI {
       const deleteBtn = e.target.closest(".delete-btn");
       if (!deleteBtn) return;
 
-      const index = deleteBtn.dataset.index;
-      this.deleteTask(index);
+      const id = deleteBtn.dataset.id;
+      this.deleteTask(id);
     });
   }
-  getAllTasksFromAllProjects(){
+  getAllTasksFromAllProjects() {
     const projects = this.storageService.getProjects();
-    return projects.flatMap(project => project.todos);
+    return projects.flatMap((project) => project.todos);
   }
-  deleteTask(index) {
-    this.storageService.removeTaskToProject(this.selectedProjectIndex, index);
-    this.renderTasks();
-  }
-  showTodayTasks(){
-    this.linkSelected.innerHTML = `📅 Today`;
-    this.selectedProjectIndex = null;
-    const todayTasks = this.getAllTasksFromAllProjects().filter(task => isToday(parseISO(task.dueDate))) 
-    console.log(`today tasks ${todayTasks[0]}`);
-    this.renderTasks(todayTasks)
-  }
-
-  toggleTaskComplete(taskId) {
+  deleteTask(taskId) {
     const projects = this.storageService.getProjects();
 
-    for(let i = 0; i< projects.length; i++){
+    for (let i = 0; i < projects.length; i++) {
       const tasks = projects[i].todos;
-      const taskIndex = tasks.findIndex(task => task.id === taskId)
-      
-      if(taskIndex != -1){
-        tasks[taskIndex].completed =!tasks[taskIndex].completed
-        this.storageService.saveProjects(projects)
-        
-        if (this.selectedProjectIndex === null) {
-          this.showTodayTasks(); 
+      const taskIndex = tasks.findIndex((task) => task.id === taskId);
+
+      if (taskIndex != -1) {
+        tasks.splice(taskIndex, 1);
+        this.storageService.saveProjects(projects);
+
+        if (this.selectedProjectIndex === null && this.activeFilter) {
+          const filteredTasks = this.activeFilter();
+          this.renderTasks(filteredTasks);
         } else {
           this.renderTasks();
         }
         return;
       }
     }
+  }
+  filterTodayTasks() {
+    this.linkSelected.innerHTML = `📅 Today`;
+    this.selectedProjectIndex = null;
 
+    this.activeFilter = () => {
+      return this.getAllTasksFromAllProjects().filter((task) =>
+        isToday(parseISO(task.dueDate))
+      );
+    };
+    const todayTasks = this.activeFilter();
+    this.renderTasks(todayTasks);
+  }
+  filterSevenDays() {
+    this.linkSelected.innerHTML = `🗓️ Next 7 days`;
+    this.selectedProjectIndex = null;
+    this.activeFilter = () => {
+      const today = startOfDay(new Date());
+      const sevenDaysFromNow = addDays(today, 7);
+
+      return this.getAllTasksFromAllProjects().filter((task) => {
+        const taskDate = parseISO(task.dueDate);
+        return isWithinInterval(taskDate, {
+          start: today,
+          end: sevenDaysFromNow,
+        });
+      });
+    };
+    const nextSeven = this.activeFilter();
+    this.renderTasks(nextSeven);
+  }
+  filterAllTasks() {
+    this.linkSelected.innerHTML = `📁 All Task`;
+    this.selectedProjectIndex = null;
+    this.activeFilter = () => {
+      return this.getAllTasksFromAllProjects();
+    };
+    const AllTasks = this.activeFilter();
+    this.renderTasks(AllTasks);
+  }
+  filterHigh() {
+    this.linkSelected.innerHTML = `🔴 High Importance`;
+    this.selectedProjectIndex = null;
+    this.activeFilter = () => {
+      return this.getAllTasksFromAllProjects().filter((task) => {
+        return task.priority === "🔴 High";
+      });
+    };
+    const highPriority = this.activeFilter();
+    console.log(highPriority);
+    this.renderTasks(highPriority);
+  }
+  filterMedium(){
+    this.linkSelected.innerHTML = `🟡 Medium Importance`;
+    this.selectedProjectIndex = null;
+    this.activeFilter = () =>{
+      return this.getAllTasksFromAllProjects().filter((task) => {
+        return task.priority === "🟡 Medium"
+      })
+    }
+    const mediumPriority = this.activeFilter();
+    this.renderTasks(mediumPriority);
+  }
+  filterLow(){
+    this.linkSelected.innerHTML = `🟢 Low Importance`;
+    this.selectedProjectIndex = null;
+    this.activeFilter = () =>{
+      return this.getAllTasksFromAllProjects().filter((task) => {
+        return task.priority === "🟢 Low"
+      })
+    }
+    const lowPriority = this.activeFilter();
+    this.renderTasks(lowPriority);
+  }
+  toggleTaskComplete(taskId) {
+    const projects = this.storageService.getProjects();
+
+    for (let i = 0; i < projects.length; i++) {
+      const tasks = projects[i].todos;
+      const taskIndex = tasks.findIndex((task) => task.id === taskId);
+
+      if (taskIndex != -1) {
+        tasks[taskIndex].completed = !tasks[taskIndex].completed;
+        this.storageService.saveProjects(projects);
+
+        if (this.selectedProjectIndex === null && this.activeFilter) {
+          const filteredTasks = this.activeFilter();
+          this.renderTasks(filteredTasks);
+        } else {
+          this.renderTasks();
+        }
+        return;
+      }
+    }
   }
 
   addTask() {
@@ -179,17 +283,19 @@ export default class UI {
   }
   renderTasks(tasks = null) {
     this.taskTable.innerHTML = "";
-  
+
     if (!tasks) {
       if (this.selectedProjectIndex == null) return;
       tasks = this.storageService.getTasksForProject(this.selectedProjectIndex);
     }
-  
+
     tasks.forEach((task, index) => {
       const row = document.createElement("div");
       row.classList.add("row");
       row.innerHTML = `
-        <span class="round ${task.completed ? "checked" : ""}" data-id="${task.id}"></span>
+        <span class="round ${task.completed ? "checked" : ""}" data-id="${
+        task.id
+      }"></span>
         <div class="task ${task.completed ? "completed" : ""}">
           <span class="task-title">${task.title}</span>
           <span class="task-description">${task.description}</span>
@@ -204,12 +310,15 @@ export default class UI {
       `;
       this.taskTable.appendChild(row);
     });
-    this.addTaskBtn.classList.toggle("hidden", this.selectedProjectIndex === null);
-
+    this.addTaskBtn.classList.toggle(
+      "hidden",
+      this.selectedProjectIndex === null
+    );
   }
-  
+
   displayProject(index) {
     this.selectedProjectIndex = index;
+    this.activeFilter = null;
     const projects = this.storageService.getProjects();
     const selectedProject = projects[index];
 
